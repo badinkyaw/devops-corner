@@ -1,0 +1,52 @@
+version: "3.8"
+
+services:
+  backend:
+    image: badinkyaw/compose-backend:2.0 ## Backend Application Image we used in docker compose lab
+    ports:
+      - "5001:5000"
+    networks:
+      - compose-net
+    deploy:
+      replicas: 3
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  mysql:
+    image: mysql:8.0
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: compose_demo
+      MYSQL_USER: appuser
+      MYSQL_PASSWORD: apppassword
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - compose-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - compose-net
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+
+networks:
+  compose-net:
+    driver: overlay ## Don't Use Bridge
+
+volumes:
+  mysql_data:
