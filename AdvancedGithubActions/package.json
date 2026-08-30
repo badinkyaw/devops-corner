@@ -1,0 +1,7 @@
+{
+  "name": "artifact-demo",
+  "version": "1.0.0",
+  "scripts": {
+    "build": "mkdir -p dist && cp app.js dist/"
+  }
+}
